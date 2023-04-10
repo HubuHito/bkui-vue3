@@ -34,7 +34,7 @@ import { getColumnReactWidth } from '../utils';
 /**
  * 固定列Hooks
  */
-export default (props, colgroups: GroupColumn[], hasScrollY?) => {
+export default (_props, colgroups: GroupColumn[], hasScrollY?) => {
   // const footHeight = computed(() => (props.pagination && props.data.length ? props.paginationHeihgt : 0));
   const resolveColumnClass = (column: GroupColumn, scrollX?, offsetRight?) => ({
     column_fixed: !!column.fixed,
@@ -56,7 +56,7 @@ export default (props, colgroups: GroupColumn[], hasScrollY?) => {
       }, hasScrollY ? SCROLLY_WIDTH : 0),
   };
 
-  const getPreColumnOffset = (fixedPos: string, column: GroupColumn) => {
+  const getPreColumnOffset = (fixedPos: string, column: GroupColumn, offset = 0) => {
     const sourceId = column[COLUMN_ATTRIBUTE.COL_UID];
     const opt = fixedPos === 'right' ? -1 : 1;
     const { length } = colgroups;
@@ -72,27 +72,33 @@ export default (props, colgroups: GroupColumn[], hasScrollY?) => {
 
       if (curFixedPos === fixedPos && sourceId !== id) {
         const width = getColumnReactWidth(current);
-        preOffset += width;
+        preOffset = preOffset + width;
       }
 
-      if (start === 0 || sourceId === id) {
+      if (sourceId === id) {
         break;
       }
     }
 
-    return preOffset;
+    return preOffset + offset;
   };
 
-  const resolveFixedColumnStyle = (column: GroupColumn) => {
+  /**
+   * 用于解析固定列偏移位置
+   * @param column 当前需要计算的列
+   * @param hasScrollY 是否有纵向滚动条
+   * @returns
+   */
+  const resolveFixedColumnStyle = (column: GroupColumn, hasScrollY = false) => {
     if (!column.fixed) {
       return {};
     }
     const fixedOffset: any = {
       left: 0,
-      right: 0,
+      right: hasScrollY ? SCROLLY_WIDTH : -1,
     };
     const fixedPos = resolveFixColPos(column);
-    fixedOffset[fixedPos] = getPreColumnOffset(fixedPos, column);
+    fixedOffset[fixedPos] = getPreColumnOffset(fixedPos, column, fixedOffset[fixedPos]);
 
     return {
       [fixedPos]: `${fixedOffset[fixedPos]}px`,
@@ -116,6 +122,12 @@ export default (props, colgroups: GroupColumn[], hasScrollY?) => {
     return { isExist, colPos, column: col };
   }));
 
+  /**
+   * 用于渲染固定列悬浮模块区域
+   * @param scrollX
+   * @param offsetRight
+   * @returns
+   */
   const renderFixedColumns = (scrollX?, offsetRight?) => fixedColumns.value
     .map(({ isExist, colPos, column }) => (isExist ? '' : <div
           class={ resolveColumnClass(column, scrollX, offsetRight) }
