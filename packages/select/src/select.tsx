@@ -586,22 +586,21 @@ export default defineComponent({
       if (isAllSelected.value) {
         selected.value = [];
       } else {
-        const tmpSelected = [];
+        const tmpSelectedMap = new Map();
         options.value.forEach(option => {
-          if (option.disabled) return;
-          tmpSelected.push({
-            value: option.optionID,
-            label: option.optionName || option.optionID,
-          });
+          if (option.disabled || tmpSelectedMap.has(option.optionID)) return;
+
+          tmpSelectedMap.set(option.optionID, option.optionName || option.optionID);
         });
         list.value?.forEach(item => {
-          if (item.disabled) return;
-          tmpSelected.push({
-            value: item[idKey.value],
-            label: item[displayKey.value],
-          });
+          if (item.disabled || tmpSelectedMap.has(item[idKey.value])) return;
+
+          tmpSelectedMap.set(item[idKey.value], item[displayKey.value]);
         });
-        selected.value = tmpSelected;
+        selected.value = Array.from(tmpSelectedMap.keys()).map(key => ({
+          value: key,
+          label: tmpSelectedMap.get(key),
+        }));
       }
       emitChange(selected.value.map(item => item.value));
       focusInput();
