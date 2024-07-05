@@ -126,6 +126,20 @@ const propsJson: IPropsTableItem[] = [
     optional: [],
   },
   {
+    name: 'showAll',
+    type: 'boolean',
+    default: 'false',
+    desc: '是否展示全部',
+    optional: ['true', 'false'],
+  },
+  {
+    name: 'allOptionId',
+    type: 'string|number',
+    default: '',
+    desc: 'showAll为true时，全部选项的ID',
+    optional: [],
+  },
+  {
     name: 'showSelectAll',
     type: 'boolean',
     default: 'false',
@@ -363,6 +377,11 @@ const propsJson: IPropsTableItem[] = [
 ];
 const eventJson = [
   {
+    name: 'update:modelValue',
+    desc: 'v-model事件',
+    params: 'value',
+  },
+  {
     name: 'change',
     desc: '选中值发生变化时触发',
     params: 'value',
@@ -406,6 +425,11 @@ const eventJson = [
     name: 'deselect',
     desc: '取消选中时调用',
     params: 'value',
+  },
+  {
+    name: 'search-change',
+    desc: '自定义搜索回调',
+    params: 'searchValue',
   },
 ];
 // 输入框插槽
