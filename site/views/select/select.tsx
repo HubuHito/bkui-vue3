@@ -42,6 +42,7 @@ import SelectSearchDemo from './select-search-demo.vue';
 import SelectSlotDemo from './select-slot-demo.vue';
 import SelectStyleDemo from './select-style-demo.vue';
 import SelectTreeDemo from './select-tree-demo.vue';
+import SelectTriggerDemo from './select-trigger-demo.vue';
 import SelectVirtualRender from './select-virtual-render.vue';
 
 const eventColumnMap = {
@@ -356,6 +357,13 @@ const propsJson: IPropsTableItem[] = [
     type: 'boolean',
     default: 'false',
   },
+  {
+    name: 'trigger',
+    desc: 'content显示方式',
+    type: 'string',
+    default: 'default',
+    optional: ['default', 'manual'],
+  },
 ];
 const eventJson = [
   {
@@ -570,6 +578,14 @@ export default defineComponent({
           demoName='select-virtual-render'
         >
           <SelectVirtualRender />
+        </DemoBox>
+        <DemoBox
+          componentName='select'
+          demoName='select-trigger-demo'
+          desc='配置trigger属性来控制content显示和隐藏'
+          title='自定义content显示方式'
+        >
+          <SelectTriggerDemo />
         </DemoBox>
         <DemoBox
           title='自定义slot'
